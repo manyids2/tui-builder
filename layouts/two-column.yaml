@@ -1,0 +1,30 @@
+yamlLayout:
+  - name: two-column
+    minGridWidth: 0
+    minGridHeight: 0
+    rowSpans: [-1]
+    columnSpans: [-1, -1]
+    items:
+      labelA: [0, 0, 1, 1]
+      labelB: [0, 1, 1, 1]
+
+  - name: two-column-navbar
+    minGridWidth: 0
+    minGridHeight: 0
+    rowSpans: [3, -1]
+    columnSpans: [-1, -1]
+    items:
+      navbar: [0, 0, 1, 2]
+      labelA: [1, 0, 1, 1]
+      labelB: [1, 1, 1, 1]
+
+  - name: two-column-navbar-sidebar
+    minGridWidth: 0
+    minGridHeight: 0
+    rowSpans: [3, -1]
+    columnSpans: [30, -1, -1]
+    items:
+      navbar: [0, 0, 1, 3]
+      sidebar: [1, 0, 1, 1]
+      labelA: [1, 1, 1, 1]
+      labelB: [1, 2, 1, 1]

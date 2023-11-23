@@ -5,6 +5,7 @@ go 1.21.3
 require (
 	github.com/gdamore/tcell/v2 v2.6.0
 	github.com/rivo/tview v0.0.0-20231024211518-8b7bcf9883df
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
