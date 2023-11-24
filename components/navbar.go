@@ -13,10 +13,10 @@ type Navbar struct {
 	Current int
 }
 
-func NewNavbar(options []string) *Navbar {
+func NewNavbar(labels []string) *Navbar {
 	return &Navbar{
 		Box:    tview.NewBox(),
-		Labels: options,
+		Labels: labels,
 	}
 }
 

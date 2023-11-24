@@ -20,12 +20,14 @@ type GridItem struct {
 
 // Container grid
 type GridLayout struct {
-	A *tview.Application // Application
-	N *components.Navbar // Navbar
-	G *tview.Grid        // Root grid
-	L *tview.Grid        // View grid
+	A *tview.Application  // Application
+	N *components.Navbar  // Navbar
+	S *components.Sidebar // Sidebar
+	G *tview.Grid         // Root grid
+	L *tview.Grid         // View grid
 
-	ShowNavbar bool // toggle navbar
+	ShowNavbar  bool // toggle navbar
+	ShowSidebar bool // toggle sidebar
 
 	Path  string                 // path to yaml
 	Grids map[string]*tview.Grid // all views from yaml
@@ -66,6 +68,7 @@ func NewGridLayout(path string) *GridLayout {
 		A:          tview.NewApplication(),
 		G:          tview.NewGrid(),
 		N:          components.NewNavbar(names),
+		S:          components.NewSidebar(names),
 		ShowNavbar: true,
 		Path:       path,
 		Grids:      grids,
@@ -95,14 +98,22 @@ func (l *GridLayout) SetKeymaps() {
 			l.Render()
 			return nil
 
-		case tcell.KeyCtrlSpace:
+		case tcell.KeyCtrlN:
 			// Toggle navbar
 			l.ShowNavbar = !l.ShowNavbar
 			l.Render()
 			return nil
+
+		case tcell.KeyCtrlS:
+			// Toggle navbar
+			l.ShowSidebar = !l.ShowSidebar
+			l.Render()
+			return nil
+
 		case tcell.KeyEnter, tcell.KeyTab:
 			// Go to next view
 			l.N.Current = (l.N.Current + 1) % len(l.N.Labels)
+			l.S.Current = (l.S.Current + 1) % len(l.S.Labels)
 			l.Name = l.N.Labels[l.N.Current]
 			l.Render()
 			return nil
@@ -118,11 +129,30 @@ func (l *GridLayout) Render() {
 	l.G.Clear()
 
 	// Add content and navbar if needed
-	if l.ShowNavbar {
-		l.G.AddItem(l.N, 0, 0, 1, 1, 0, 0, false)
-		l.G.AddItem(l.Grids[l.Name], 1, 0, 1, 1, 0, 0, false)
+	if l.ShowSidebar {
+		if l.ShowNavbar {
+			// sidebar, navbar, content
+			l.G.SetRows(1, -1).SetColumns(-1, -4)
+			l.G.AddItem(l.S, 0, 0, 2, 1, 0, 0, false)
+			l.G.AddItem(l.N, 0, 1, 1, 1, 0, 0, false)
+			l.G.AddItem(l.Grids[l.Name], 1, 1, 1, 1, 0, 0, false)
+		} else {
+			// sidebar, content
+			l.G.SetRows(-1).SetColumns(-1, -4)
+			l.G.AddItem(l.S, 0, 0, 1, 1, 0, 0, false)
+			l.G.AddItem(l.Grids[l.Name], 0, 1, 1, 1, 0, 0, false)
+		}
 	} else {
-		l.G.AddItem(l.Grids[l.Name], 0, 0, 2, 1, 0, 0, false)
+		if l.ShowNavbar {
+			// navbar, content
+			l.G.SetRows(1, -1).SetColumns(-1)
+			l.G.AddItem(l.N, 0, 0, 1, 1, 0, 0, false)
+			l.G.AddItem(l.Grids[l.Name], 1, 0, 1, 1, 0, 0, false)
+		} else {
+			// only content
+			l.G.SetRows(-1).SetColumns(-1)
+			l.G.AddItem(l.Grids[l.Name], 0, 0, 1, 1, 0, 0, false)
+		}
 	}
 
 	// Reflect changes to app
